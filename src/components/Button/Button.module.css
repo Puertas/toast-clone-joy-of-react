@@ -13,3 +13,7 @@
   cursor: pointer;
   outline-offset: 4px;
 }
+
+.button:disabled {
+  opacity: 50%;
+}
