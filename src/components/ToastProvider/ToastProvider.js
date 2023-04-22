@@ -1,6 +1,6 @@
 import React, { useState, createContext, useCallback } from 'react';
 
-import useEscapeKey from '../../hooks/useEscapeKey';
+import useKeydown from '../../hooks/useKeydown';
 
 export const ToastContext = createContext();
 
@@ -11,7 +11,7 @@ function ToastProvider({ children }) {
     setToasts([]);
   }, []);
 
-  useEscapeKey(clearAllToast);
+  useKeydown('Escape', clearAllToast);
 
   function deleteToast(id) {
     const newList = toasts.filter((toast) => toast.id !== id);
