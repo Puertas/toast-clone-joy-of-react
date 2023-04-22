@@ -1,11 +1,25 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 
 import Toast from '../Toast';
 import { ToastContext } from '../ToastProvider';
 import styles from './ToastShelf.module.css';
 
 function ToastShelf() {
-  const { toasts } = useContext(ToastContext);
+  const { toasts, clearAllToasts } = useContext(ToastContext);
+
+  useEffect(() => {
+    function handleKeypress(event) {
+      if (event.code === 'Escape') {
+        clearAllToasts();
+      }
+    }
+    window.addEventListener('keydown', handleKeypress);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeypress);
+    };
+  }, [clearAllToasts]);
+
   return (
     <ol className={styles.wrapper}>
       {toasts?.map(({ id, type, message }) => {
