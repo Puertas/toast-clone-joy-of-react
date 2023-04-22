@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import Button from '../Button';
 import Radio from '../Radio';
-import Toast from '../Toast';
+import ToastShelf from '../ToastShelf';
 
 import styles from './ToastPlayground.module.css';
 
@@ -11,15 +11,27 @@ const VARIANT_OPTIONS = ['notice', 'warning', 'success', 'error'];
 function ToastPlayground() {
   const [variant, setVariant] = useState(VARIANT_OPTIONS[0]);
   const [message, setMessage] = useState('');
-  const [showToast, setShowToast] = useState(false);
+  const [toastList, setToastList] = useState([]);
 
   function handleSubmit(event) {
     event.preventDefault();
-    setShowToast(true);
+    handleAddToast();
+    setVariant(VARIANT_OPTIONS[0]);
+    setMessage('');
   }
 
-  function handleCloseToast() {
-    setShowToast(false);
+  function handleCloseToast(id) {
+    const newList = toastList.filter((toast) => toast.id !== id);
+    setToastList(newList);
+  }
+
+  function handleAddToast() {
+    const newToast = {
+      id: crypto.randomUUID(),
+      type: variant,
+      message: message,
+    };
+    setToastList([...toastList, newToast]);
   }
 
   return (
@@ -28,11 +40,7 @@ function ToastPlayground() {
         <img alt='Cute toast mascot' src='/toast.png' />
         <h1>Toast Playground</h1>
       </header>
-      {showToast && (
-        <Toast type={variant} handleClose={handleCloseToast}>
-          {message}
-        </Toast>
-      )}
+      <ToastShelf list={toastList} handleCloseToast={handleCloseToast} />
       <form onSubmit={handleSubmit}>
         <div className={styles.controlsWrapper}>
           <div className={styles.row}>
