@@ -1,9 +1,22 @@
-import React, { useState, createContext, useCallback } from 'react';
+import React, { useState, createContext, useEffect } from 'react';
 
 export const ToastContext = createContext();
 
 function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([]);
+
+  useEffect(() => {
+    function handleKeypress(event) {
+      if (event.code === 'Escape') {
+        setToasts([]);
+      }
+    }
+    window.addEventListener('keydown', handleKeypress);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeypress);
+    };
+  }, []);
 
   function deleteToast(id) {
     const newList = toasts.filter((toast) => toast.id !== id);
@@ -19,13 +32,10 @@ function ToastProvider({ children }) {
     setToasts([...toasts, newToast]);
   }
 
-  const clearAllToasts = useCallback(() => setToasts([]), []);
-
   const value = {
     toasts,
     addToast,
     deleteToast,
-    clearAllToasts,
   };
 
   return (
